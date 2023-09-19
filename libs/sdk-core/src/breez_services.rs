@@ -1515,6 +1515,7 @@ impl Interceptor for ApiKeyInterceptor {
 pub fn mnemonic_to_seed(phrase: String) -> Result<Vec<u8>> {
     let mnemonic = Mnemonic::from_phrase(&phrase, Language::English)?;
     let seed = Seed::new(&mnemonic, "");
+    debug!("mnemonic_to_seed return");
     Ok(seed.as_bytes().to_vec())
 }
 

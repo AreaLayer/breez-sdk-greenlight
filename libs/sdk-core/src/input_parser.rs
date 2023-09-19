@@ -158,6 +158,7 @@ pub async fn parse(input: &str) -> Result<InputType> {
                 .transpose()?;
         }
 
+        debug!("parse_input return");
         return match invoice_param {
             None => Ok(BitcoinAddress {
                 address: bitcoin_addr_data,
@@ -167,11 +168,13 @@ pub async fn parse(input: &str) -> Result<InputType> {
     }
 
     if let Ok(invoice) = parse_invoice(input) {
+        debug!("parse_input return");
         return Ok(Bolt11 { invoice });
     }
 
     // Public key serialized in compressed form (66 hex chars)
     if let Ok(_node_id) = bitcoin::secp256k1::PublicKey::from_str(input) {
+        debug!("parse_input return");
         return Ok(NodeId {
             node_id: input.into(),
         });
@@ -180,6 +183,7 @@ pub async fn parse(input: &str) -> Result<InputType> {
     // Possible Node URI (check for separator symbol, try to parse pubkey, ignore rest)
     if let Some('@') = input.chars().nth(66) {
         if let Ok(_node_id) = bitcoin::secp256k1::PublicKey::from_str(&input[..66]) {
+            debug!("parse_input return");
             return Ok(NodeId {
                 node_id: input.into(),
             });
@@ -188,6 +192,7 @@ pub async fn parse(input: &str) -> Result<InputType> {
 
     if let Ok(url) = reqwest::Url::parse(input) {
         if ["http", "https"].contains(&url.scheme()) {
+            debug!("parse_input return");
             return Ok(Url { url: input.into() });
         }
     }
@@ -198,6 +203,7 @@ pub async fn parse(input: &str) -> Result<InputType> {
         // For LNURL-auth links, their type is already known if the link contains the login tag
         // No need to query the endpoint for details
         if lnurl_endpoint.contains("tag=login") {
+            debug!("parse_input return");
             return Ok(LnUrlAuth {
                 data: crate::lnurl::auth::validate_request(domain, lnurl_endpoint)?,
             });
@@ -221,6 +227,7 @@ pub async fn parse(input: &str) -> Result<InputType> {
             _ => temp,
         };
 
+        debug!("parse_input return");
         return Ok(temp);
     }
 
