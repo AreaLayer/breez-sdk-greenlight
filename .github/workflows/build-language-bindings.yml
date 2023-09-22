@@ -138,7 +138,7 @@ jobs:
         if: ${{ inputs.golang }}
         working-directory: libs/sdk-bindings
         run: |
-          cargo install uniffi-bindgen-go --git https://github.com/NordSecurity/uniffi-bindgen-go
+          cargo install uniffi-bindgen-go --git https://github.com/NordSecurity/uniffi-bindgen-go --rev 3cb2fbbf6bb2299591a1bfb4aa827881b2099283
           uniffi-bindgen-go src/breez_sdk.udl -o ffi/golang -c ./uniffi.toml
   
       - name: Archive golang binding
