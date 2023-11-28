@@ -64,7 +64,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: sdk-bindings-${{ matrix.target }}
-        path: libs/target/${{ matrix.target }}/release/breez_sdk_bindings.dll
+        path: libs/target/${{ matrix.target }}/release/*.*
 
   build-dummies:
     if: ${{ inputs.use-dummy-binaries }}
