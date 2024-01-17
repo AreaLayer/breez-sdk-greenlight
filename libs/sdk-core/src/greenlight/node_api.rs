@@ -229,15 +229,16 @@ impl Greenlight {
     async fn get_client(&self) -> NodeResult<node::Client> {
         let mut gl_client = self.gl_client.lock().await;
         if gl_client.is_none() {
-            let scheduler = Scheduler::new(self.signer.node_id(), self.sdk_config.network.into())
-                .await
-                .map_err(NodeError::ServiceConnectivity)?;
-            *gl_client = Some(
-                scheduler
-                    .schedule(self.tls_config.clone())
-                    .await
-                    .map_err(NodeError::ServiceConnectivity)?,
-            );
+            let scheduled_node = node::Node::new(
+                self.signer.node_id(),
+                self.sdk_config.network.into(),
+                self.tls_config.clone(),
+            )
+            .schedule()
+            .await
+            .map_err(NodeError::ServiceConnectivity)?;
+
+            *gl_client = Some(scheduled_node);
         }
         Ok(gl_client.clone().unwrap())
     }
@@ -245,15 +246,16 @@ impl Greenlight {
     pub(crate) async fn get_node_client(&self) -> NodeResult<node::ClnClient> {
         let mut node_client = self.node_client.lock().await;
         if node_client.is_none() {
-            let scheduler = Scheduler::new(self.signer.node_id(), self.sdk_config.network.into())
-                .await
-                .map_err(NodeError::ServiceConnectivity)?;
-            *node_client = Some(
-                scheduler
-                    .schedule(self.tls_config.clone())
-                    .await
-                    .map_err(NodeError::ServiceConnectivity)?,
-            );
+            let scheduled_node = node::Node::new(
+                self.signer.node_id(),
+                self.sdk_config.network.into(),
+                self.tls_config.clone(),
+            )
+            .schedule()
+            .await
+            .map_err(NodeError::ServiceConnectivity)?;
+
+            *node_client = Some(scheduled_node);
         }
         Ok(node_client.clone().unwrap())
     }

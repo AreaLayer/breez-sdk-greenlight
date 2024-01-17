@@ -838,6 +838,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7a81dae078cea95a014a339291cec439d2f232ebe854a9d672b796c6afafa9b7"
 
 [[package]]
+name = "crypto"
+version = "0.5.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bf1e6e5492f8f0830c37f301f6349e0dac8b2466e4fe89eef90e9eef906cd046"
+dependencies = [
+ "crypto-common",
+]
+
+[[package]]
 name = "crypto-common"
 version = "0.1.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1290,7 +1299,7 @@ checksum = "4271d37baee1b8c7e4b708028c57d816cf9d2434acb33a549475f78c181f6253"
 [[package]]
 name = "gl-client"
 version = "0.1.9"
-source = "git+https://github.com/Blockstream/greenlight.git?rev=556eedf47a837b71c4277ba6ee84322f5cbd80de#556eedf47a837b71c4277ba6ee84322f5cbd80de"
+source = "git+https://github.com/Blockstream/greenlight.git?branch=main-0.2#6d16a7dc3fb2de2296128f41e46e214c7b597021"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1309,10 +1318,12 @@ dependencies = [
  "mockall",
  "pin-project",
  "prost",
+ "prost-derive",
  "rand",
  "rcgen",
  "reqwest",
  "ring 0.16.20",
+ "runeauth",
  "rustls-pemfile",
  "secp256k1 0.26.0",
  "serde",
@@ -2557,6 +2568,22 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bd124222d17ad93a644ed9d011a40f4fb64aa54275c08cc216524a9ea82fb09f"
 dependencies = [
  "digest 0.10.7",
+]
+
+[[package]]
+name = "runeauth"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0b8cf56aa3c9bcafc184853e8b356df61728a6f41da65fe2f0cc9e2a3f9f2318"
+dependencies = [
+ "anyhow",
+ "base64 0.21.5",
+ "crypto",
+ "env_logger 0.10.1",
+ "hex",
+ "indexmap 2.1.0",
+ "sha2",
+ "thiserror",
 ]
 
 [[package]]
