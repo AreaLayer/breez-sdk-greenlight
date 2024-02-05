@@ -12,6 +12,8 @@ use bitcoin::util::bip32::ChildNumber;
 use chrono::Local;
 use futures::TryFutureExt;
 use log::{LevelFilter, Metadata, Record};
+use reqwest::header::CONTENT_TYPE;
+use reqwest::Body;
 use serde_json::json;
 use tokio::sync::{mpsc, watch, Mutex};
 use tokio::time::sleep;
@@ -38,6 +40,7 @@ use crate::grpc::signer_client::SignerClient;
 use crate::grpc::support_client::SupportClient;
 use crate::grpc::swapper_client::SwapperClient;
 use crate::grpc::PaymentInformation;
+use crate::input_parser::get_reqwest_client;
 use crate::invoice::{
     add_lsp_routing_hints, parse_invoice, validate_network, LNInvoice, RouteHint, RouteHintHop,
 };
@@ -1589,6 +1592,33 @@ impl BreezServices {
             .await?;
 
         Ok(())
+    }
+
+    /// Registers for a swap tx notification. When a new transaction to the specified `swap_address`
+    /// is confirmed, a callback will be triggered to the specified `webhook_url`.
+    pub async fn register_swap_tx_webhook(
+        &self,
+        webhook_url: String,
+        swap_address: String,
+    ) -> SdkResult<()> {
+        info!("Registering for swap tx webhook notifications");
+
+        get_reqwest_client()?
+            .post(format!("{}/api/v1/register", self.config.chainnotifier_url))
+            .header(CONTENT_TYPE, "application/json")
+            .body(Body::from(
+                json!({
+                    "address": swap_address,
+                    "webhook": webhook_url
+                })
+                .to_string(),
+            ))
+            .send()
+            .await
+            .map(|_| ())
+            .map_err(|err| SdkError::ServiceConnectivity {
+                err: format!("Failed to register for tx confirmation notifications: {err}"),
+            })
     }
 }
 
